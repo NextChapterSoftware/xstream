@@ -755,8 +755,8 @@ class Flatten<T> implements Operator<Stream<T>, T> {
   }
 
   _stop(): void {
-    this.ins._remove(this, true);
-    if (this.inner !== NO) this.inner._remove(this.il, true);
+    this.ins._remove(this);
+    if (this.inner !== NO) this.inner._remove(this.il);
     this.out = NO as Stream<T>;
     this.open = true;
     this.inner = NO as Stream<T>;
@@ -773,7 +773,7 @@ class Flatten<T> implements Operator<Stream<T>, T> {
     const u = this.out;
     if (u === NO) return;
     const { inner, il } = this;
-    if (inner !== NO && il !== NO_IL) inner._remove(il, true);
+    if (inner !== NO && il !== NO_IL) inner._remove(il);
     (this.inner = s)._add(this.il = new FlattenListener(u, this));
   }
 
