@@ -1,7 +1,7 @@
 {
-  "name": "xstream",
-  "version": "11.14.0",
-  "description": "An extremely intuitive, small, and fast functional reactive stream library for JavaScript",
+  "name": "@nextchaptersoftware/xstream",
+  "version": "1.0.2",
+  "description": "Fork of https://github.com/staltz/xstream An extremely intuitive, small, and fast functional reactive stream library for JavaScript",
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
@@ -37,15 +37,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/staltz/xstream.git"
+    "url": "git+https://github.com/NextChapterSoftware/xstream.git"
   },
   "author": "Andre Staltz <andre+npm@staltz.com> (http://andre.staltz.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/staltz/xstream/issues"
+    "url": "https://github.com/NextChapterSoftware/xstream/issues"
   },
-  "homepage": "https://github.com/staltz/xstream#readme",
+  "homepage": "https://github.com/NextChapterSoftware/xstream#readme",
   "dependencies": {
+    "@nextchaptersoftware/xstream": "^1.0.0",
     "globalthis": "^1.0.1",
     "symbol-observable": "^2.0.3"
   },
