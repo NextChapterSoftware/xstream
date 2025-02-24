@@ -99,7 +99,7 @@ class StreamSub<T> implements Subscription {
   constructor(private _stream: Stream<T>, private _listener: InternalListener<T>) { }
 
   unsubscribe(): void {
-    this._stream._remove(this._listener);
+    this._stream._remove(this._listener, true);
   }
 }
 
@@ -755,8 +755,8 @@ class Flatten<T> implements Operator<Stream<T>, T> {
   }
 
   _stop(): void {
-    this.ins._remove(this);
-    if (this.inner !== NO) this.inner._remove(this.il);
+    this.ins._remove(this, true);
+    if (this.inner !== NO) this.inner._remove(this.il, true);
     this.out = NO as Stream<T>;
     this.open = true;
     this.inner = NO as Stream<T>;
@@ -773,7 +773,7 @@ class Flatten<T> implements Operator<Stream<T>, T> {
     const u = this.out;
     if (u === NO) return;
     const { inner, il } = this;
-    if (inner !== NO && il !== NO_IL) inner._remove(il);
+    if (inner !== NO && il !== NO_IL) inner._remove(il, true);
     (this.inner = s)._add(this.il = new FlattenListener(u, this));
   }
 
@@ -1151,7 +1151,7 @@ export class Stream<T> implements InternalListener<T> {
     }
   }
 
-  _remove(il: InternalListener<T>): void {
+  _remove(il: InternalListener<T>, async: boolean = false): void {
     const ta = this._target;
     if (ta) return ta._remove(il);
     const a = this._ils;
@@ -1160,7 +1160,11 @@ export class Stream<T> implements InternalListener<T> {
       a.splice(i, 1);
       if (this._prod !== NO && a.length <= 0) {
         this._err = NO;
-        this._stopID = setTimeout(() => this._stopNow());
+        if (async) {
+          this._stopID = setTimeout(() => this._stopNow());
+        } else {
+          this._stopNow();
+        }
       } else if (a.length === 1) {
         this._pruneCycles();
       }
@@ -1216,7 +1220,7 @@ export class Stream<T> implements InternalListener<T> {
    * @param {Listener<T>} listener
    */
   removeListener(listener: Partial<Listener<T>>): void {
-    this._remove(listener as InternalListener<T>);
+    this._remove(listener as InternalListener<T>, true);
   }
 
   /**
