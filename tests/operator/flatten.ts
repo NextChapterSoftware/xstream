@@ -6,7 +6,7 @@ import * as assert from 'assert';
 
 describe('Stream.prototype.flatten', () => {
   describe('with map+debug to break the fusion', () => {
-    it('should not restart inner stream if switching to the same inner stream', (done: any) => {
+    it('Restarts inner stream when switching to the same inner stream', (done: any) => {
       const outer = fromDiagram('-A---------B----------C--------|');
       const nums = fromDiagram(  '-a-b-c-----------------------|', {
         values: {a: 1, b: 2, c: 3}
@@ -15,7 +15,7 @@ describe('Stream.prototype.flatten', () => {
 
       const stream = outer.map(() => inner).debug(() => { }).flatten();
 
-      const expected = [10, 20, 30];
+      const expected = [10, 20, 30, 10, 20, 30, 10, 20, 30];
 
       stream.addListener({
         next: (x: number) => {
@@ -204,7 +204,7 @@ describe('Stream.prototype.flatten', () => {
       setTimeout(() => done(), 500);
     });
 
-    it('should allow switching inners asynchronously without restarting source', (done: any) => {
+    it('should allow switching inners asynchronously with restarting source', (done: any) => {
       const outer = fromDiagram(   '-A---------B----------C------|');
       const periodic = fromDiagram('---a-b--c----d--e--f----g--h-|', {
         values: { a: 1, b: 2, c: 3, d: 4, e: 5, f: 6, g: 7, h: 8 }
@@ -220,7 +220,7 @@ describe('Stream.prototype.flatten', () => {
           return xs.never();
         }
       }).flatten();
-      const expected = [10, 20, 30, 400, 500, 600, 7000, 8000];
+      const expected = [10, 20, 30, 100, 200, 300, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
 
       stream.addListener({
         next: (x: number) => {
@@ -234,7 +234,7 @@ describe('Stream.prototype.flatten', () => {
       });
     });
 
-    it('should not restart inner stream if switching to the same inner stream', (done: any) => {
+    it('should restart inner stream if switching to the same inner stream', (done: any) => {
       const outer = fromDiagram('-A---------B----------C--------|');
       const nums = fromDiagram(  '-a-b-c-----------------------|', {
         values: {a: 1, b: 2, c: 3}
@@ -243,7 +243,7 @@ describe('Stream.prototype.flatten', () => {
 
       const stream = outer.map(() => inner).flatten();
 
-      const expected = [10, 20, 30];
+      const expected = [10, 20, 30, 10, 20, 30, 10, 20, 30];
 
       stream.addListener({
         next: (x: number) => {
@@ -321,7 +321,7 @@ describe('Stream.prototype.flatten', () => {
 
       const stream = outer.mapTo(inner).flatten();
 
-      const expected = [10, 20, 30];
+      const expected = [10, 20, 30, 10, 20, 30, 10, 20, 30];
 
       stream.addListener({
         next: (x: number) => {
