@@ -1,6 +1,6 @@
 {
   "name": "@nextchaptersoftware/xstream",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Fork of https://github.com/staltz/xstream An extremely intuitive, small, and fast functional reactive stream library for JavaScript",
   "main": "index.js",
   "typings": "index.d.ts",

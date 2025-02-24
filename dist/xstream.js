@@ -64,7 +64,7 @@ var StreamSub =  (function () {
         this._listener = _listener;
     }
     StreamSub.prototype.unsubscribe = function () {
-        this._stream._remove(this._listener);
+        this._stream._remove(this._listener, true);
     };
     return StreamSub;
 }());
@@ -876,8 +876,9 @@ var Stream =  (function () {
                 p._start(this);
         }
     };
-    Stream.prototype._remove = function (il) {
+    Stream.prototype._remove = function (il, async) {
         var _this = this;
+        if (async === void 0) { async = false; }
         var ta = this._target;
         if (ta)
             return ta._remove(il);
@@ -887,7 +888,12 @@ var Stream =  (function () {
             a.splice(i, 1);
             if (this._prod !== NO && a.length <= 0) {
                 this._err = NO;
-                this._stopID = setTimeout(function () { return _this._stopNow(); });
+                if (async) {
+                    this._stopID = setTimeout(function () { return _this._stopNow(); });
+                }
+                else {
+                    this._stopNow();
+                }
             }
             else if (a.length === 1) {
                 this._pruneCycles();
@@ -934,7 +940,7 @@ var Stream =  (function () {
     };
     
     Stream.prototype.removeListener = function (listener) {
-        this._remove(listener);
+        this._remove(listener, true);
     };
     
     Stream.prototype.subscribe = function (listener) {
